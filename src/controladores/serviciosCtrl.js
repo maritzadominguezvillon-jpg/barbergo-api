@@ -72,16 +72,28 @@ export const registrarServicio = async (req, res) => {
             categoria
         } = req.body;
 
+        const imagen = req.file
+            ? `/uploads/${req.file.filename}`
+            : null;
+
         const [rows] = await conmysql.query(
             `INSERT INTO servicios
-            (nombre, descripcion, precio, duracion, categoria)
-            VALUES (?, ?, ?, ?, ?)`,
+            (
+                nombre,
+                descripcion,
+                precio,
+                duracion,
+                categoria,
+                imagen
+            )
+            VALUES (?, ?, ?, ?, ?, ?)`,
             [
                 nombre,
                 descripcion,
                 precio,
                 duracion,
-                categoria
+                categoria,
+                imagen
             ]
         );
 
@@ -117,13 +129,18 @@ export const actualizarServicio = async (req, res) => {
             categoria
         } = req.body;
 
+        const imagen = req.file
+            ? `/uploads/${req.file.filename}`
+            : null;
+
         const [resultado] = await conmysql.query(
             `UPDATE servicios
             SET nombre=?,
                 descripcion=?,
                 precio=?,
                 duracion=?,
-                categoria=?
+                categoria=?,
+                imagen=COALESCE(?, imagen)
             WHERE id_servicio=?`,
             [
                 nombre,
@@ -131,6 +148,7 @@ export const actualizarServicio = async (req, res) => {
                 precio,
                 duracion,
                 categoria,
+                imagen,
                 id
             ]
         );

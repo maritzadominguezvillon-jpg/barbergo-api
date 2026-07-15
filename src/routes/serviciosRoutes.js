@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { subirImagen } from '../middleware/subirImagen.js';
 
 import {
     listarServicios,
@@ -17,10 +18,18 @@ router.get('/servicios', listarServicios);
 router.get('/servicios/:id', buscarServicio);
 
 // Registrar servicio
-router.post('/servicios', registrarServicio);
+router.post(
+    '/servicios',
+    subirImagen.single('imagen'),
+    registrarServicio
+);
 
 // Actualizar servicio
-router.put('/servicios/:id', actualizarServicio);
+router.put(
+    '/servicios/:id',
+    subirImagen.single('imagen'),
+    actualizarServicio
+);
 
 // Eliminar servicio
 router.delete('/servicios/:id', eliminarServicio);
