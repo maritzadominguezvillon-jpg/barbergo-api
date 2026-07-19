@@ -98,21 +98,34 @@ export const registrarCita = async (req, res) => {
             id_profesional,
             id_servicio,
             fecha,
-            hora,
-            estado
+            hora
         } = req.body;
 
         const [rows] = await conmysql.query(
             `INSERT INTO citas
-            (id_usuario,id_profesional,id_servicio,fecha,hora,estado)
-            VALUES (?,?,?,?,?,?)`,
-            [
+            (
                 id_usuario,
                 id_profesional,
                 id_servicio,
                 fecha,
                 hora,
                 estado
+            )
+            VALUES
+            (
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                'Pendiente'
+            )`,
+            [
+                id_usuario,
+                id_profesional,
+                id_servicio,
+                fecha,
+                hora
             ]
         );
 
@@ -227,3 +240,42 @@ export const eliminarCita = async (req, res) => {
     }
 
 };
+
+// =======================================
+// MIS CITAS DEL USUARIO LOGUEADO
+// =======================================
+export const misCitas = async (req, res) => {
+
+    try {
+
+        const id_usuario = req.usuario.id_usuario;
+
+        const [rows] = await conmysql.query(`
+            SELECT
+                c.id_cita,
+                s.nombre,
+                s.imagen,
+                p.nombre AS profesional,
+                c.fecha,
+                c.hora,
+                c.estado
+            FROM citas c
+            INNER JOIN servicios s
+                ON c.id_servicio = s.id_servicio
+            INNER JOIN profesionales p
+                ON c.id_profesional = p.id_profesional
+            WHERE c.id_usuario = ?
+            ORDER BY c.fecha, c.hora
+        `,[id_usuario]);
+
+        res.json(rows);
+
+    } catch(error){
+
+        res.status(500).json({
+            mensaje:error.message
+        });
+
+    }
+
+}

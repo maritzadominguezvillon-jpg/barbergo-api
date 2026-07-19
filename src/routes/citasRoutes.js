@@ -4,7 +4,8 @@ import {
     buscarCita,
     registrarCita,
     actualizarCita,
-    eliminarCita
+    eliminarCita,
+    misCitas
 } from '../controladores/citasCtrl.js';
 
 import { validarToken } from '../middleware/validarToken.js';
@@ -25,5 +26,8 @@ router.put('/citas/:id', validarToken, actualizarCita);
 
 // Eliminar cita (requiere token)
 router.delete('/citas/:id', validarToken, eliminarCita);
+
+// Mis citas
+router.get('/mis-citas', validarToken, misCitas);
 
 export default router;
