@@ -9,21 +9,22 @@ export const listarCitas = async (req, res) => {
 
         const [rows] = await conmysql.query(`
             SELECT
-                c.id_cita,
-                u.nombre AS cliente,
-                p.nombre AS profesional,
-                s.nombre AS servicio,
-                c.fecha,
-                c.hora,
-                c.estado
-            FROM citas c
-            INNER JOIN usuarios u
-                ON c.id_usuario = u.id_usuario
-            INNER JOIN profesionales p
-                ON c.id_profesional = p.id_profesional
-            INNER JOIN servicios s
-                ON c.id_servicio = s.id_servicio
-            ORDER BY c.fecha, c.hora
+    c.id_cita,
+    u.nombre AS cliente,
+    s.nombre AS servicio,
+    s.imagen,
+    p.nombre AS profesional,
+    c.fecha,
+    c.hora,
+    c.estado
+FROM citas c
+INNER JOIN usuarios u
+    ON c.id_usuario = u.id_usuario
+INNER JOIN profesionales p
+    ON c.id_profesional = p.id_profesional
+INNER JOIN servicios s
+    ON c.id_servicio = s.id_servicio
+ORDER BY c.fecha, c.hora
         `);
 
         res.json(rows);
