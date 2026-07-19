@@ -1,12 +1,20 @@
 import multer from 'multer';
 import path from 'path';
+import { fileURLToPath } from 'url';
 
-// Configuración de almacenamiento
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+
 const storage = multer.diskStorage({
 
     destination: (req, file, cb) => {
-        cb(null, 'src/uploads');
+
+        cb(null, path.join(__dirname, '../uploads'));
+
     },
+
 
     filename: (req, file, cb) => {
 
@@ -18,7 +26,7 @@ const storage = multer.diskStorage({
 
 });
 
-// Validar que sea una imagen
+
 const fileFilter = (req, file, cb) => {
 
     const tipos = /jpeg|jpg|png|webp/;
@@ -29,23 +37,28 @@ const fileFilter = (req, file, cb) => {
 
     const mimetype = tipos.test(file.mimetype);
 
-    if (extension && mimetype) {
 
-        return cb(null, true);
+    if(extension && mimetype){
+
+        cb(null,true);
+
+    }else{
+
+        cb(new Error('Solo se permiten imágenes'));
 
     }
 
-    cb(new Error('Solo se permiten imágenes'));
-
 };
 
-// Exportar middleware
+
 export const subirImagen = multer({
 
     storage,
+
     fileFilter,
-    limits: {
-        fileSize: 5 * 1024 * 1024
+
+    limits:{
+        fileSize:5 * 1024 * 1024
     }
 
 });

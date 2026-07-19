@@ -73,8 +73,11 @@ export const registrarServicio = async (req, res) => {
         } = req.body;
 
         const imagen = req.file
-            ? `/uploads/${req.file.filename}`
-            : null;
+    ? `/uploads/${req.file.filename}`
+    : null;
+
+console.log("ARCHIVO SUBIDO:", req.file);
+console.log("RUTA IMAGEN:", imagen);
 
         const [rows] = await conmysql.query(
             `INSERT INTO servicios
