@@ -318,5 +318,57 @@ export const misCitas = async (req, res) => {
 
     }
 
+    export const cambiarEstadoCita = async (req,res)=>{
+
+    try{
+
+        const {id}=req.params;
+
+        const {estado}=req.body;
+
+
+        const [resultado]=await conmysql.query(
+            `
+            UPDATE citas
+            SET estado=?
+            WHERE id_cita=?
+            `,
+            [
+                estado,
+                id
+            ]
+        );
+
+
+        if(resultado.affectedRows<=0){
+
+            return res.status(404).json({
+
+                mensaje:"Cita no encontrada"
+
+            });
+
+        }
+
+
+        res.json({
+
+            mensaje:"Estado actualizado correctamente"
+
+        });
+
+
+    }catch(error){
+
+        res.status(500).json({
+
+            mensaje:error.message
+
+        });
+
+    }
+
+};
+
 
 }
