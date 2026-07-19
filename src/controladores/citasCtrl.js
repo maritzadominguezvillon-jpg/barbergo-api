@@ -281,7 +281,7 @@ export const todasLasCitas = async (req, res) => {
 
 };
 
-// =======================================
+/// =======================================
 // MIS CITAS DEL USUARIO LOGUEADO
 // =======================================
 export const misCitas = async (req, res) => {
@@ -318,7 +318,13 @@ export const misCitas = async (req, res) => {
 
     }
 
-    export const cambiarEstadoCita = async (req,res)=>{
+};
+
+
+// =======================================
+// CAMBIAR ESTADO DE CITA (ADMIN)
+// =======================================
+export const cambiarEstadoCita = async (req,res)=>{
 
     try{
 
@@ -340,7 +346,7 @@ export const misCitas = async (req, res) => {
         );
 
 
-        if(resultado.affectedRows<=0){
+        if(resultado.affectedRows <= 0){
 
             return res.status(404).json({
 
@@ -365,10 +371,6 @@ export const misCitas = async (req, res) => {
             mensaje:error.message
 
         });
-
     }
 
 };
-
-
-}
