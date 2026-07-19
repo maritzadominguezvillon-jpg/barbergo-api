@@ -242,6 +242,45 @@ export const eliminarCita = async (req, res) => {
 };
 
 // =======================================
+// TODAS LAS CITAS (ADMIN)
+// =======================================
+export const todasLasCitas = async (req, res) => {
+
+    try {
+
+        const [rows] = await conmysql.query(`
+            SELECT
+                c.id_cita,
+                u.nombre AS cliente,
+                s.nombre AS servicio,
+                s.imagen,
+                p.nombre AS profesional,
+                c.fecha,
+                c.hora,
+                c.estado
+            FROM citas c
+            INNER JOIN usuarios u
+                ON c.id_usuario = u.id_usuario
+            INNER JOIN servicios s
+                ON c.id_servicio = s.id_servicio
+            INNER JOIN profesionales p
+                ON c.id_profesional = p.id_profesional
+            ORDER BY c.fecha, c.hora
+        `);
+
+        res.json(rows);
+
+    } catch (error) {
+
+        res.status(500).json({
+            mensaje: error.message
+        });
+
+    }
+
+};
+
+// =======================================
 // MIS CITAS DEL USUARIO LOGUEADO
 // =======================================
 export const misCitas = async (req, res) => {
@@ -277,5 +316,6 @@ export const misCitas = async (req, res) => {
         });
 
     }
+
 
 }

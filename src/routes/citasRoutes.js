@@ -5,7 +5,8 @@ import {
     registrarCita,
     actualizarCita,
     eliminarCita,
-    misCitas
+    misCitas,
+    todasLasCitas
 } from '../controladores/citasCtrl.js';
 
 import { validarToken } from '../middleware/validarToken.js';
@@ -13,7 +14,7 @@ import { validarToken } from '../middleware/validarToken.js';
 const router = Router();
 
 // Listar citas
-router.get('/citas', listarCitas);
+router.get('/citas', validarToken, listarCitas);
 
 // Buscar cita por ID
 router.get('/citas/:id', buscarCita);
@@ -29,5 +30,9 @@ router.delete('/citas/:id', validarToken, eliminarCita);
 
 // Mis citas
 router.get('/mis-citas', validarToken, misCitas);
+
+
+// Todas las citas (Administrador)
+router.get('/admin/citas', validarToken, todasLasCitas);
 
 export default router;
