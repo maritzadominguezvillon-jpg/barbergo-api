@@ -54,17 +54,19 @@ export const login = async (req, res) => {
         );
 
         res.json({
-            auth: true,
-            mensaje: 'Login correcto',
-            token,
-            usuario: {
-                id_usuario: usuario.id_usuario,
-                nombre: usuario.nombre,
-                apellido: usuario.apellido,
-                correo: usuario.correo,
-                rol: usuario.rol
-            }
-        });
+    auth: true,
+    mensaje: 'Login correcto',
+    token,
+    usuario: {
+        id_usuario: usuario.id_usuario,
+        nombre: usuario.nombre,
+        apellido: usuario.apellido,
+        telefono: usuario.telefono,
+        correo: usuario.correo,
+        rol: usuario.rol,
+        fecha_registro: usuario.fecha_registro
+    }
+});
 
     } catch (error) {
 
