@@ -170,6 +170,72 @@ export const actualizarUsuario = async (req, res) => {
 };
 
 // =======================================
+// ACTUALIZAR PERFIL USUARIO
+// =======================================
+export const actualizarPerfil = async (req, res) => {
+
+    try {
+
+        const { id } = req.params;
+
+
+        const {
+            nombre,
+            apellido,
+            telefono,
+            correo
+        } = req.body;
+
+
+        const [resultado] = await conmysql.query(
+
+            `UPDATE usuarios
+            SET nombre=?,
+                apellido=?,
+                telefono=?,
+                correo=?
+            WHERE id_usuario=?`,
+
+            [
+                nombre,
+                apellido,
+                telefono,
+                correo,
+                id
+            ]
+
+        );
+
+
+        if(resultado.affectedRows <= 0){
+
+            return res.status(404).json({
+                mensaje:"Usuario no encontrado"
+            });
+
+        }
+
+
+        res.json({
+
+            mensaje:"Perfil actualizado correctamente"
+
+        });
+
+
+    } catch(error){
+
+        res.status(500).json({
+
+            mensaje:error.message
+
+        });
+
+    }
+
+};
+
+// =======================================
 // ELIMINAR USUARIO
 // =======================================
 export const eliminarUsuario = async (req, res) => {
