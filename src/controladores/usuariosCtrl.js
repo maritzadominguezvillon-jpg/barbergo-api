@@ -71,6 +71,78 @@ export const registrarUsuario = async (req, res) => {
     }
 
 };
+// =======================================
+// REGISTRO CLIENTE DESDE LOGIN
+// =======================================
+
+export const registrarCliente = async (req, res) => {
+
+    try {
+
+        const {
+            nombre,
+            apellido,
+            telefono,
+            correo,
+            password
+        } = req.body;
+
+        // Verificar si ya existe el correo
+        const [existe] = await conmysql.query(
+
+            "SELECT * FROM usuarios WHERE correo=?",
+
+            [correo]
+
+        );
+
+        if (existe.length > 0) {
+
+            return res.status(400).json({
+
+                mensaje: "El correo ya está registrado"
+
+            });
+
+        }
+
+        const passwordEncriptada = await bcrypt.hash(password, 10);
+
+        const [rows] = await conmysql.query(
+
+            `INSERT INTO usuarios
+            (nombre, apellido, telefono, correo, password, rol)
+            VALUES (?, ?, ?, ?, ?, 'cliente')`,
+
+            [
+                nombre,
+                apellido,
+                telefono,
+                correo,
+                passwordEncriptada
+            ]
+
+        );
+
+        res.json({
+
+            mensaje: "Cliente registrado correctamente",
+
+            id_usuario: rows.insertId
+
+        });
+
+    } catch (error) {
+
+        res.status(500).json({
+
+            mensaje: error.message
+
+        });
+
+    }
+
+};
 
 // =======================================
 // BUSCAR USUARIO POR ID
@@ -288,6 +360,72 @@ export const cambiarPassword = async (req, res) => {
 
     }
 
+
+};
+// =======================================
+// RECUPERAR CONTRASEÑA
+// =======================================
+
+export const recuperarPassword = async (req, res) => {
+
+    try {
+
+        const { correo, password } = req.body;
+
+        // Buscar usuario por correo
+        const [usuarios] = await conmysql.query(
+
+            'SELECT * FROM usuarios WHERE correo = ?',
+
+            [correo]
+
+        );
+
+        if (usuarios.length === 0) {
+
+            return res.status(404).json({
+
+                mensaje: 'El correo no está registrado'
+
+            });
+
+        }
+
+        // Encriptar nueva contraseña
+        const passwordEncriptada = await bcrypt.hash(password, 10);
+
+        // Actualizar contraseña
+        await conmysql.query(
+
+            `UPDATE usuarios
+             SET password = ?
+             WHERE correo = ?`,
+
+            [
+
+                passwordEncriptada,
+
+                correo
+
+            ]
+
+        );
+
+        res.json({
+
+            mensaje: 'Contraseña actualizada correctamente'
+
+        });
+
+    } catch (error) {
+
+        res.status(500).json({
+
+            mensaje: error.message
+
+        });
+
+    }
 
 };
 
