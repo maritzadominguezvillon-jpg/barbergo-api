@@ -374,3 +374,48 @@ export const cambiarEstadoCita = async (req,res)=>{
     }
 
 };
+
+// =======================================
+// HISTORIAL DEL USUARIO
+// =======================================
+
+export const historial = async (req, res) => {
+
+    try {
+
+        const id_usuario = req.usuario.id_usuario;
+
+        const [rows] = await conmysql.query(`
+            SELECT
+                c.id_cita,
+                s.nombre,
+                s.imagen,
+                p.nombre AS profesional,
+                c.fecha,
+                c.hora,
+                c.estado
+            FROM citas c
+            INNER JOIN servicios s
+                ON c.id_servicio = s.id_servicio
+            INNER JOIN profesionales p
+                ON c.id_profesional = p.id_profesional
+            WHERE
+                c.id_usuario = ?
+                AND (
+                    c.estado = 'Confirmada'
+                    OR c.estado = 'Cancelada'
+                )
+            ORDER BY c.fecha DESC
+        `,[id_usuario]);
+
+        res.json(rows);
+
+    } catch(error){
+
+        res.status(500).json({
+            mensaje:error.message
+        });
+
+    }
+
+}

@@ -7,7 +7,8 @@ import {
     eliminarCita,
     misCitas,
     todasLasCitas,
-    cambiarEstadoCita
+    cambiarEstadoCita,
+    historial
 } from '../controladores/citasCtrl.js';
 
 import { validarToken } from '../middleware/validarToken.js';
@@ -35,6 +36,9 @@ router.get('/mis-citas', validarToken, misCitas);
 
 // Todas las citas (Administrador)
 router.get('/admin/citas', validarToken, todasLasCitas);
+
+// Historial
+router.get('/historial', validarToken, historial);
 
 router.put(
 '/citas/estado/:id',
