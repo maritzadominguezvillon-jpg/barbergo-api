@@ -4,13 +4,16 @@ import {listarUsuarios, registrarCliente, registrarUsuario, buscarUsuario, actua
 const router = Router();
 
 router.get('/usuarios', listarUsuarios);
-router.get('/usuarios/:id', buscarUsuario);
+
 router.post('/usuarios', registrarUsuario);
 router.post('/registro', registrarCliente);
-router.put('/usuarios/:id', actualizarUsuario);
+
+router.put('/usuarios/recuperar-password', recuperarPassword);
 router.put('/usuarios/perfil/:id', actualizarPerfil);
 router.put('/usuarios/password/:id', cambiarPassword);
-router.put('/usuarios/recuperar-password', recuperarPassword);
+
+router.get('/usuarios/:id', buscarUsuario);
+router.put('/usuarios/:id', actualizarUsuario);
 router.delete('/usuarios/:id', eliminarUsuario);
 
 export default router;
