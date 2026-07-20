@@ -170,6 +170,128 @@ export const actualizarUsuario = async (req, res) => {
 };
 
 // =======================================
+// CAMBIAR CONTRASEÑA
+// =======================================
+export const cambiarPassword = async (req, res) => {
+
+    try {
+
+        const { id } = req.params;
+
+
+        const {
+            passwordActual,
+            passwordNueva
+        } = req.body;
+
+
+
+        // Buscar usuario
+
+        const [usuarios] = await conmysql.query(
+
+            'SELECT password FROM usuarios WHERE id_usuario=?',
+
+            [id]
+
+        );
+
+
+
+        if(usuarios.length === 0){
+
+            return res.status(404).json({
+
+                mensaje:"Usuario no encontrado"
+
+            });
+
+        }
+
+
+
+        const passwordGuardada = usuarios[0].password;
+
+
+
+        // Comparar contraseña actual
+
+        const coincide = await bcrypt.compare(
+
+            passwordActual,
+
+            passwordGuardada
+
+        );
+
+
+
+        if(!coincide){
+
+            return res.status(400).json({
+
+                mensaje:"La contraseña actual es incorrecta"
+
+            });
+
+        }
+
+
+
+        // Encriptar nueva contraseña
+
+        const nuevaPassword = await bcrypt.hash(
+
+            passwordNueva,
+
+            10
+
+        );
+
+
+
+        await conmysql.query(
+
+            `UPDATE usuarios
+             SET password=?
+             WHERE id_usuario=?`,
+
+            [
+
+                nuevaPassword,
+
+                id
+
+            ]
+
+        );
+
+
+
+        res.json({
+
+            mensaje:"Contraseña actualizada correctamente"
+
+        });
+
+
+
+    } catch(error){
+
+
+        res.status(500).json({
+
+            mensaje:error.message
+
+        });
+
+
+    }
+
+
+};
+
+// =======================================
 // ACTUALIZAR PERFIL USUARIO
 // =======================================
 export const actualizarPerfil = async (req, res) => {
